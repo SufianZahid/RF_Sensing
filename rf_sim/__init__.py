@@ -1,9 +1,12 @@
-"""RF Sensing Indoor Propagation Simulator — Phase 1 Module."""
+"""RF Sensing Indoor Propagation Simulator — Phase 1 & Phase 2 Module."""
 
 from rf_sim.environment import Environment, Wall
 from rf_sim.geometry import segment_intersects, walls_between
+from rf_sim.human import Human
 from rf_sim.materials import MATERIAL_LOSS_DB, get_wall_attenuation
+from rf_sim.multipath import Path, build_paths, power_dbm_to_amplitude, sum_signal
 from rf_sim.nodes import Receiver, Transmitter
+from rf_sim.noise import NOISE_PRESETS, NoiseModel
 from rf_sim.propagation import (
     SPEED_OF_LIGHT,
     friis_received_power,
@@ -16,11 +19,18 @@ __all__ = [
     "Wall",
     "Transmitter",
     "Receiver",
+    "Human",
+    "Path",
+    "NoiseModel",
+    "NOISE_PRESETS",
     "fspl",
     "friis_received_power",
     "wall_loss_for_path",
     "segment_intersects",
     "walls_between",
+    "build_paths",
+    "sum_signal",
+    "power_dbm_to_amplitude",
     "MATERIAL_LOSS_DB",
     "get_wall_attenuation",
     "SPEED_OF_LIGHT",
