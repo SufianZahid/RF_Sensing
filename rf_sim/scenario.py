@@ -40,7 +40,8 @@ class ScenarioConfig:
 def sample_scenario(scenario_id: int, seed: int = 42) -> ScenarioConfig:
     """Samples a randomized, realistic scenario configuration.
 
-    Deterministic per scenario_id using a dedicated random number generator.
+    Deterministic per scenario_id using dedicated random number generators
+    to guarantee zero PRNG stream coupling across variable retry loops.
 
     Args:
         scenario_id: Integer scenario index.
@@ -49,9 +50,10 @@ def sample_scenario(scenario_id: int, seed: int = 42) -> ScenarioConfig:
     Returns:
         ScenarioConfig: Complete scenario specification object.
     """
+    # Base scenario RNG for fixed-count parameter draws
     rng = np.random.default_rng(seed + scenario_id * 1000)
 
-    # 1. Independent categorical choices FIRST to ensure 100% uncoupled PRNG sampling
+    # 1. Independent categorical choices
     person_present = bool(rng.choice([True, False]))
     materials = ["drywall", "wood", "brick", "concrete"]
     primary_material = str(rng.choice(materials))
@@ -67,13 +69,14 @@ def sample_scenario(scenario_id: int, seed: int = 42) -> ScenarioConfig:
     width = float(rng.uniform(6.0, 12.0))
     height = float(rng.uniform(6.0, 12.0))
 
-    # 3. TX and RX positions (retried until dist >= 3.0m)
+    # 3. TX and RX positions (Dedicated sub-RNG to avoid variable loop length PRNG stream shifting)
+    dist_rng = np.random.default_rng(seed + scenario_id * 1000 + 777)
     min_tx_rx_dist = 3.0
-    for _ in range(200):
-        tx_x = float(rng.uniform(0.5, width - 0.5))
-        tx_y = float(rng.uniform(0.5, height - 0.5))
-        rx_x = float(rng.uniform(0.5, width - 0.5))
-        rx_y = float(rng.uniform(0.5, height - 0.5))
+    for _ in range(300):
+        tx_x = float(dist_rng.uniform(0.5, width - 0.5))
+        tx_y = float(dist_rng.uniform(0.5, height - 0.5))
+        rx_x = float(dist_rng.uniform(0.5, width - 0.5))
+        rx_y = float(dist_rng.uniform(0.5, height - 0.5))
         dist = math.hypot(tx_x - rx_x, tx_y - rx_y)
         if dist >= min_tx_rx_dist:
             break
