@@ -1,5 +1,12 @@
-"""RF Sensing Indoor Propagation Simulator — Phase 1 to Phase 5 Module."""
+"""RF Sensing Indoor Propagation Simulator — Phase 1 to Phase 6 Module."""
 
+from rf_sim.dashboard import (
+    format_detection_status,
+    generate_presence_heatmap,
+    plot_heatmap,
+    plot_room_view,
+    plot_signal_panel,
+)
 from rf_sim.dataset_generator import DatasetGenerator, compute_zone
 from rf_sim.environment import Environment, Wall
 from rf_sim.features import (
@@ -73,6 +80,11 @@ __all__ = [
     "compute_metrics",
     "extract_feature_importance",
     "train_and_evaluate_task",
+    "plot_room_view",
+    "plot_signal_panel",
+    "generate_presence_heatmap",
+    "plot_heatmap",
+    "format_detection_status",
     "fspl",
     "friis_received_power",
     "wall_loss_for_path",
