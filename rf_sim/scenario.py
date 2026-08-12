@@ -40,8 +40,8 @@ class ScenarioConfig:
 def sample_scenario(scenario_id: int, seed: int = 42) -> ScenarioConfig:
     """Samples a randomized, realistic scenario configuration.
 
-    Deterministic per scenario_id using dedicated random number generators
-    to guarantee zero PRNG stream coupling across variable retry loops.
+    Guarantees 100% unconditional PRNG draw sequences to ensure total statistical independence
+    between environmental attributes (distance, room size, wall material) and target presence labels.
 
     Args:
         scenario_id: Integer scenario index.
@@ -53,23 +53,20 @@ def sample_scenario(scenario_id: int, seed: int = 42) -> ScenarioConfig:
     # Base scenario RNG for fixed-count parameter draws
     rng = np.random.default_rng(seed + scenario_id * 1000)
 
-    # 1. Independent categorical choices
+    # 1. Unconditional categorical draws (Fixed PRNG stream offset)
     person_present = bool(rng.choice([True, False]))
     materials = ["drywall", "wood", "brick", "concrete"]
     primary_material = str(rng.choice(materials))
     noise_level = str(rng.choice(["low", "medium", "high"]))
+    raw_motion_choice = str(rng.choice(["stationary", "linear_left", "linear_right", "random_walk"]))
 
-    if not person_present:
-        movement_state = "absent"
-    else:
-        motion_choices = ["stationary", "linear_left", "linear_right", "random_walk"]
-        movement_state = str(rng.choice(motion_choices))
+    movement_state = raw_motion_choice if person_present else "absent"
 
-    # 2. Room dimensions
+    # 2. Unconditional room dimensions
     width = float(rng.uniform(6.0, 12.0))
     height = float(rng.uniform(6.0, 12.0))
 
-    # 3. TX and RX positions (Dedicated sub-RNG to avoid variable loop length PRNG stream shifting)
+    # 3. TX and RX positions (Dedicated sub-RNG to eliminate variable retry loop PRNG shifting)
     dist_rng = np.random.default_rng(seed + scenario_id * 1000 + 777)
     min_tx_rx_dist = 3.0
     for _ in range(300):
@@ -81,7 +78,7 @@ def sample_scenario(scenario_id: int, seed: int = 42) -> ScenarioConfig:
         if dist >= min_tx_rx_dist:
             break
 
-    # 4. Walls sampling (1 to 3 interior walls)
+    # 4. Unconditional walls sampling (1 to 3 interior walls)
     num_walls = int(rng.integers(1, 4))
     walls: List[Wall] = []
 
