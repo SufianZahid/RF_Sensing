@@ -1,4 +1,4 @@
-"""RF Sensing Indoor Propagation Simulator — Phase 1, Phase 2, Phase 3, & Phase 4 Module."""
+"""RF Sensing Indoor Propagation Simulator — Phase 1 to Phase 5 Module."""
 
 from rf_sim.dataset_generator import DatasetGenerator, compute_zone
 from rf_sim.environment import Environment, Wall
@@ -10,6 +10,14 @@ from rf_sim.features import (
 from rf_sim.geometry import segment_intersects, walls_between
 from rf_sim.human import Human
 from rf_sim.materials import MATERIAL_LOSS_DB, get_wall_attenuation
+from rf_sim.ml import (
+    TaskDataset,
+    compute_metrics,
+    extract_feature_importance,
+    get_model_candidates,
+    load_task_data,
+    train_and_evaluate_task,
+)
 from rf_sim.motion import (
     BaseMotion,
     LinearMotion,
@@ -59,6 +67,12 @@ __all__ = [
     "sample_scenario",
     "DatasetGenerator",
     "compute_zone",
+    "TaskDataset",
+    "load_task_data",
+    "get_model_candidates",
+    "compute_metrics",
+    "extract_feature_importance",
+    "train_and_evaluate_task",
     "fspl",
     "friis_received_power",
     "wall_loss_for_path",
