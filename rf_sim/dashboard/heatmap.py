@@ -51,7 +51,7 @@ def generate_presence_heatmap(
                     tx.freq_hz = freq
                     paths = build_paths(env, tx, rx, human=test_human)
                     raw_signal = sum_signal(paths)
-                    noisy_signal = noise_model.add_noise(raw_signal, seed=s_i + f_i * 100)
+                    noisy_signal = noise_model.add_noise(raw_signal)
                     snapshot_amp[s_i, f_i] = np.abs(noisy_signal)
                     snapshot_phase[s_i, f_i] = np.angle(noisy_signal)
 
