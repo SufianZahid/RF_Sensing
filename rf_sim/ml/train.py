@@ -41,7 +41,7 @@ def train_and_evaluate_task(
             param_grid=param_grid,
             cv=3,
             scoring="f1_macro",
-            n_jobs=-1,
+            n_jobs=1,
         )
         grid_search.fit(task_data.X_train, task_data.y_train)
         best_model = grid_search.best_estimator_
