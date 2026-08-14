@@ -22,8 +22,8 @@ def get_model_candidates(random_state: int = 42) -> Dict[str, Tuple[BaseEstimato
             {"C": [0.1, 1.0, 10.0], "solver": ["lbfgs"]},
         ),
         "SVC": (
-            SVC(probability=False, random_state=random_state),
-            {"C": [0.1, 1.0, 10.0], "kernel": ["rbf", "linear"]},
+            SVC(random_state=random_state),
+            {"C": [0.1, 1.0, 10.0], "gamma": ["scale", "auto"]},
         ),
         "RandomForest": (
             RandomForestClassifier(n_estimators=100, random_state=random_state),

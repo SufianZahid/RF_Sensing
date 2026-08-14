@@ -3,6 +3,7 @@
 import os
 import sys
 from pathlib import Path
+from typing import Any, Dict, Optional, Tuple
 
 # Add project root directory to sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
@@ -87,11 +88,11 @@ def run_scenario_simulation(
         if motion_type == "stationary":
             motion = StationaryMotion(position=(h_start_x, h_start_y))
         elif motion_type == "linear_left":
-            motion = LinearMotion(start_position=(h_start_x, h_start_y), velocity=(-h_speed, 0.0))
+            motion = LinearMotion(start_position=(h_start_x, h_start_y), velocity=(-h_speed, 0.0), bounds=(width, height))
         elif motion_type == "linear_right":
-            motion = LinearMotion(start_position=(h_start_x, h_start_y), velocity=(h_speed, 0.0))
+            motion = LinearMotion(start_position=(h_start_x, h_start_y), velocity=(h_speed, 0.0), bounds=(width, height))
         else:  # random_walk
-            motion = RandomWalkMotion(start_position=(h_start_x, h_start_y), speed=h_speed, seed=42)
+            motion = RandomWalkMotion(start_position=(h_start_x, h_start_y), speed=h_speed, bounds=(width, height), seed=42)
 
     gen = TimeSeriesGenerator(env=env, tx=tx, rx=rx)
     time_series = gen.generate(

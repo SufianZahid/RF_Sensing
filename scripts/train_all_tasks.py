@@ -53,10 +53,10 @@ def main() -> None:
         test_prec = res["test_metrics"]["precision"]
         test_rec = res["test_metrics"]["recall"]
 
-        print(f"  -> Winner: {winner}")
-        print(f"  -> Validation Macro-F1s: " + ", ".join([f"{m}: {res['val_results'][m]['f1']:.4f}" for m in res['val_results']]))
-        print(f"  -> FINAL TEST METRICS (Evaluated ONCE on {len(task_data.y_test)} test samples):")
-        print(f"     Accuracy: {test_acc:.4f} | Precision: {test_prec:.4f} | Recall: {test_rec:.4f} | Macro-F1: {test_f1:.4f}\n")
+        print(f"  -> Winner: {winner}", flush=True)
+        print(f"  -> Validation Macro-F1s: " + ", ".join([f"{m}: {res['val_results'][m]['f1']:.4f}" for m in res['val_results']]), flush=True)
+        print(f"  -> FINAL TEST METRICS (Evaluated ONCE on {len(task_data.y_test)} test samples):", flush=True)
+        print(f"     Accuracy: {test_acc:.4f} | Precision: {test_prec:.4f} | Recall: {test_rec:.4f} | Macro-F1: {test_f1:.4f}\n", flush=True)
 
         # Collect summary rows per model type
         for model_name, val_m in res["val_results"].items():
@@ -81,10 +81,17 @@ def main() -> None:
     md_path = os.path.join(args.results_dir, "task_results.md")
 
     results_df.to_csv(csv_path, index=False)
-    results_df.to_markdown(md_path, index=False)
+    try:
+        results_df.to_markdown(md_path, index=False)
+    except (ImportError, ModuleNotFoundError):
+        with open(md_path, "w") as f:
+            f.write(f"| {' | '.join(results_df.columns)} |\n")
+            f.write(f"| {' | '.join(['---'] * len(results_df.columns))} |\n")
+            for _, row in results_df.iterrows():
+                f.write(f"| {' | '.join(str(val) for val in row.values)} |\n")
 
-    print(f"Saved results summary table to {csv_path} and {md_path}")
-    print("=================================================================")
+    print(f"Saved results summary table to {csv_path} and {md_path}", flush=True)
+    print("=================================================================", flush=True)
 
 
 if __name__ == "__main__":
